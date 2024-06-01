@@ -8,18 +8,20 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
     socket.on("data", (data) => {
         request = data.toString()
-        console.log(request)
         requestType = request.split(" ")[0]
-        console.log(requestType)
         url = request.split(" ")[1]
-        console.log(process.argv[3])
         let fileName = url.split('/').pop()
         let directory = process.argv[3] 
         if(url == '/'){
             socket.write('HTTP/1.1 200 OK\r\n\r\n')
         }else if(url.includes('/echo/')){
-            console.log(fileName)
-            socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`)
+            let requestArray = request.split("\r\n")
+            const encodingHeader = requestArray.find(e => e.includes('Accept-Encoding'))?.split(': ')[1];
+            if(encodingHeader == 'gzip'){
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${encodingHeader}\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`)
+            }else{
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`)
+            }
         }else if(url.includes('/user-agent')){
             let userString = 'User-Agent: '
             let str = request.substr(request.indexOf(userString)+userString.length, request.length);
