@@ -8,7 +8,6 @@ const server = net.createServer((socket) => {
     socket.on("data", (data) => {
         if(data.toString().split(" ")[1] === '/'){
             socket.write('HTTP/1.1 200 OK\r\n\r\n')
-
         }else{
             socket.write('HTTP/1.1 404 Not Found\r\n\r\n')
         }
