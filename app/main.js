@@ -8,17 +8,23 @@ const server = net.createServer((socket) => {
     socket.on("data", (data) => {
         request = data.toString()
         url = request.split(" ")[1]
-        if(url == '/'){
-            socket.write('HTTP/1.1 200 OK\r\n\r\n')
+        console.log(request)
+        if(url.includes('/user-agent')){
+            let userString = 'User-Agent: '
+            let str = request.substr(request.indexOf(userString)+userString.length, request.length);
+            let userAgentResult = str.replace(/\s/g, "")
+            socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgentResult.length}\r\n\r\n${userAgentResult}`)
         }else if(url.includes('/echo/')){
-            str = url.split('/').pop()
+            let str = url.split('/').pop();
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${str.length}\r\n\r\n${str}`)
+        }else if(url == '/'){
+            socket.write('HTTP/1.1 200 OK\r\n\r\n')
+
         }
         else{
             socket.write('HTTP/1.1 404 Not Found\r\n\r\n')
         }
-        socket.end();
-        server.close();
+
     });
 });
 
