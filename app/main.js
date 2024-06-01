@@ -13,7 +13,6 @@ const server = net.createServer((socket) => {
         url = request.split(" ")[1]
         let fileName = url.split('/').pop()
         let directory = process.argv[3] 
-        console.log(fileName, "+++++")
         if(url == '/'){
             socket.write('HTTP/1.1 200 OK\r\n\r\n')
         }else if(url.includes('/echo/')){
