@@ -18,6 +18,7 @@ const server = net.createServer((socket) => {
         if(url == '/'){
             socket.write('HTTP/1.1 200 OK\r\n\r\n')
         }else if(url.includes('/echo/')){
+            console.log(fileName)
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`)
         }else if(url.includes('/user-agent')){
             let userString = 'User-Agent: '
