@@ -17,11 +17,12 @@ const server = net.createServer((socket) => {
         }else if(url.includes('/echo/')){
             let requestArray = request.split("\r\n")
             const encodingHeader = requestArray.find(e => e.includes('Accept-Encoding'))?.split(': ')[1];
-            if(encodingHeader == 'gzip'){
-                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${encodingHeader}\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`)
+            let res = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`
+            if(encodingHeader?.includes('gzip')){
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: gzip\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`)
             }else{
-                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${fileName.length}\r\n\r\n${fileName}`)
-            }
+                socket.write(res)
+            }            
         }else if(url.includes('/user-agent')){
             let userString = 'User-Agent: '
             let str = request.substr(request.indexOf(userString)+userString.length, request.length);
